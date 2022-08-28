@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from "react";
 import './styles/App.css';
 import twitterLogo from './assets/twitter-logo.svg';
+import {ethers} from "ethers";
 
 // Constants
 const TWITTER_HANDLE = 'LuckyNwekeKFC';
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
+// Add the domain you will be minting
+const tld = '.hav';
+const CONTRACT_ADDRESS = '0x4f70C70469FA714CA230fc4a89a285787135023a';
 
 const App = () => {
 	const [currentAccount, setCurrentAccount] = useState('');
-
+	// Add some state data properties
+	const [domain, setDomain] = useState('');
+	const [record, setRecord] = useState('');
 	// Implement your connectWallet method here
 	const connectWallet = async () => {
 		try {
@@ -55,7 +61,7 @@ const App = () => {
 	// Render Methods
 	const renderNotConnectedContainer = () => (
 		<div className="connect-wallet-container">
-		  <img src="https://media.giphy.com/media/3ohhwytHcusSCXXOUg/giphy.gif" alt="Ninja donut gif" />
+		  <img src="https://media.giphy.com/media/3ohhwytHcusSCXXOUg/giphy.gif" alt="Havilah donut gif" />
 		  {/* Call the connectWallet function we just wrote when the button is clicked */}
 		  <button onClick={connectWallet} className="cta-button connect-wallet-button">
 			Connect Wallet
@@ -63,10 +69,44 @@ const App = () => {
 		</div>
 	);
 
-  		// This runs our function when the page loads.
- 		 useEffect(() => {
-    		checkIfWalletIsConnected();
-  		}, [])
+	// Form to enter domain name and data
+	const renderInputForm = () =>{
+		return (
+			<div className="form-container">
+				<div className="first-row">
+					<input
+						type="text"
+						value={domain}
+						placeholder='domain'
+						onChange={e => setDomain(e.target.value)}
+					/>
+					<p className='tld'> {tld} </p>
+				</div>
+
+				<input
+					type="text"
+					value={record}
+					placeholder='What is your tribal name?'
+					onChange={e => setRecord(e.target.value)}
+				/>
+
+				<div className="button-container">
+					<button className='cta-button mint-button' disabled={null} onClick={null}>
+						Mint
+					</button>  
+					<button className='cta-button mint-button' disabled={null} onClick={null}>
+						Set data
+					</button>  
+				</div>
+
+			</div>
+		);
+	}
+
+  	// This runs our function when the page loads.
+ 	useEffect(() => {
+    	checkIfWalletIsConnected();
+  	}, [])
 
   	return (
     
@@ -81,8 +121,9 @@ const App = () => {
 					</header>
 				</div>
 
-        		{/* Hide the connect button if currentAccount isn't empty*/}
         		{!currentAccount && renderNotConnectedContainer()}
+				{/* Render the input form if an account is connected */}
+				{currentAccount && renderInputForm()}
 
         		<div className="footer-container">
           			<img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
